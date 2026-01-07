@@ -211,26 +211,36 @@
         }
     ];
 
-    // --- 逻辑部分 (不用改) ---
+    // --- 逻辑部分 (升级版) ---
     function updateContent() {
         const now = new Date();
         const currentHour = now.getHours(); 
         
-        // 尝试找到当前小时的故事，如果找不到，就默认显示第1个（避免空白）
+        // 这是一个通用的默认卡片，当某个小时没有特定故事时（比如凌晨）显示它
+        const defaultStory = {
+            type: "随时学习",
+            title: "坚持就是胜利",
+            fr: "Le succès est la somme de petits efforts, répétés jour après jour.",
+            cn: "成功是日复一日微小努力的积累。继续加油！"
+        };
+
+        // 1. 尝试找到当前小时的故事
         let content = stories.find(s => s.hour === currentHour);
+        
+        // 2. 如果找不到（content 是空的），就用上面的默认卡片顶替
         if (!content) {
-            // 如果这个小时没有专门写故事，就随机显示一个，或者显示默认的
-            content = stories[0]; 
+            content = defaultStory; 
         }
         
-        document.getElementById('clock').innerText = `${currentHour}:00 Now`;
+        // 3. 更新网页上的文字
+        document.getElementById('clock').innerText = `${currentHour}:00`;
         document.getElementById('category').innerText = content.type;
         document.getElementById('story-title').innerText = content.title;
         document.getElementById('french-text').innerText = content.fr;
         document.getElementById('chinese-text').innerText = content.cn;
     }
 
-    updateContent(); 
+    updateContent();
 </script>
 
 </body>
