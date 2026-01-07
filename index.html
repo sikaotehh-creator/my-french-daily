@@ -5,70 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>每日法语故事</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-        }
-        .card {
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            max-width: 600px; /* 变宽了，适合放文章 */
-            width: 100%;
-        }
-        .header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #f0f0f0;
-            padding-bottom: 15px;
-        }
-        .time-badge {
-            background-color: #e7f5ff;
-            color: #1971c2;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 0.9em;
-        }
-        .tag {
-            background-color: #fff0f6;
-            color: #c02c7b;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 0.8em;
-            text-transform: uppercase;
-        }
-        h2 { 
-            margin: 0 0 15px 0; 
-            color: #2c3e50; 
-            font-size: 1.5em;
-        }
-        .french-content { 
-            font-size: 1.15em; 
-            line-height: 1.6; 
-            color: #2c3e50;
-            margin-bottom: 20px;
-            text-align: left; /* 左对齐，适合阅读长文 */
-        }
-        .chinese-trans { 
-            font-size: 1em; 
-            color: #7f8c8d; 
-            line-height: 1.5;
-            border-top: 1px dashed #ddd;
-            padding-top: 15px;
-            text-align: left;
-        }
-    </style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        /* 设置背景颜色作为图片加载前的备份 */
+        background-color: #2c3e50;
+        /* 添加背景图片，并叠加一层半透明黑色滤镜，让文字卡片更突出 */
+        background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80');
+        /* 让背景图铺满整个屏幕 */
+        background-size: cover;
+        /* 让图片居中显示 */
+        background-position: center center;
+        /* 背景固定，滚动页面时图片不动，看起来更高级 */
+        background-attachment: fixed;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+        color: #333;
+    }
+    .card {
+        /* 卡片背景稍微增加一点点透明度，融入背景 */
+        background: rgba(255, 255, 255, 0.95);
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3); /* 加深阴影，更有立体感 */
+        max-width: 600px; 
+        width: 100%;
+        backdrop-filter: blur(5px); /* (可选) 给卡片背后加一点毛玻璃效果 */
+    }
+    .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 15px;
+    }
+    .time-badge {
+        background-color: #e7f5ff;
+        color: #1971c2;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 0.9em;
+    }
+    .tag {
+        background-color: #fff0f6;
+        color: #c02c7b;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 0.8em;
+        text-transform: uppercase;
+    }
+    h2 { 
+        margin: 0 0 15px 0; 
+        color: #2c3e50; 
+        font-size: 1.5em;
+    }
+    .french-content { 
+        font-size: 1.15em; 
+        line-height: 1.6; 
+        color: #2c3e50;
+        margin-bottom: 20px;
+        text-align: left;
+    }
+    .chinese-trans { 
+        font-size: 1em; 
+        color: #7f8c8d; 
+        line-height: 1.5;
+        border-top: 1px dashed #ddd;
+        padding-top: 15px;
+        text-align: left;
+    }
+</style>
 </head>
 <body>
 
