@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>每日法语故事</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            max-width: 600px; /* 变宽了，适合放文章 */
+            width: 100%;
+        }
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 15px;
+        }
+        .time-badge {
+            background-color: #e7f5ff;
+            color: #1971c2;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .tag {
+            background-color: #fff0f6;
+            color: #c02c7b;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            text-transform: uppercase;
+        }
+        h2 { 
+            margin: 0 0 15px 0; 
+            color: #2c3e50; 
+            font-size: 1.5em;
+        }
+        .french-content { 
+            font-size: 1.15em; 
+            line-height: 1.6; 
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: left; /* 左对齐，适合阅读长文 */
+        }
+        .chinese-trans { 
+            font-size: 1em; 
+            color: #7f8c8d; 
+            line-height: 1.5;
+            border-top: 1px dashed #ddd;
+            padding-top: 15px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header-row">
+        <span class="time-badge" id="clock">加载中...</span>
+        <span class="tag" id="category">今日故事</span>
+    </div>
+    
+    <h2 id="story-title">标题加载中...</h2>
+    <div class="french-content" id="french-text">
+        正在获取最新的法语内容...
+    </div>
+    <div class="chinese-trans" id="chinese-text">
+        
+    </div>
+</div>
+
+<script>
+    // --- 这里是你的内容库 ---
+    // 我先为你准备了 3 个不同时间段的例子 (早上、中午、晚上)
+    // 你需要用同样的格式填满 0 到 23 小时
+    const stories = [
+        { 
+            hour: 8, 
+            type: "早间新闻",
+            title: "La circulation à Paris", 
+            fr: "Ce matin, la circulation est difficile sur le périphérique parisien. Les autorités conseillent de prendre les transports en commun. Le métro fonctionne normalement.", 
+            cn: "今天早上，巴黎环城公路交通拥堵。当局建议乘坐公共交通工具。地铁运行正常。" 
+        },
+        { 
+            hour: 9, 
+            type: "职场故事",
+            title: "La réunion du lundi", 
+            fr: "Sophie prépare sa présentation pour la réunion de neuf heures. Elle est un peu nerveuse, mais elle a bien travaillé son dossier. Ses collègues l'encouragent.", 
+            cn: "索菲正在为九点的会议准备演示文稿。她有点紧张，但她的文件准备得很充分。她的同事们都在鼓励她。" 
+        },
+        { 
+            hour: 10, 
+            type: "生活百科",
+            title: "Le tri sélectif", 
+            fr: "En France, on trie les déchets avec soin. La poubelle jaune est pour le plastique et le carton. C'est un geste simple pour protéger l'environnement.", 
+            cn: "在法国，人们认真地对垃圾进行分类。黄色垃圾桶用于投放塑料和纸板。这是保护环境的一个简单举动。" 
+        },
+        { 
+            hour: 11, 
+            type: "文化",
+            title: "Les musées gratuits", 
+            fr: "Saviez-vous que beaucoup de musées sont gratuits le premier dimanche du mois ? C'est le moment idéal pour voir La Joconde au Louvre sans payer.", 
+            cn: "你知道吗？很多博物馆在每个月的第一个星期日是免费的。这是免费去卢浮宫看蒙娜丽莎的最佳时机。" 
+        },
+        { 
+            hour: 12, 
+            type: "美食",
+            title: "Le déjeuner bistro", 
+            fr: "A midi, les Parisiens aiment manger en terrasse. Le plat du jour est souvent un steak-frites ou une salade composée. On finit toujours par un petit café.", 
+            cn: "中午，巴黎人喜欢在露台吃饭。今天的特色菜通常是牛排配薯条或混合沙拉。人们总以一杯小咖啡结束午餐。" 
+        },
+        { 
+            hour: 13, 
+            type: "休闲",
+            title: "La pause lecture", 
+            fr: "Après le déjeuner, Marc aime lire quelques pages d'un roman dans le parc. Le soleil brille et les oiseaux chantent. C'est une pause bien méritée.", 
+            cn: "午饭后，马克喜欢在公园里读几页小说。阳光明媚，鸟儿歌唱。这是当之无愧的休息时间。" 
+        },
+        { 
+            hour: 14, 
+            type: "科技新闻",
+            title: "Le télétravail", 
+            fr: "Le télétravail devient de plus en plus populaire en Europe. Beaucoup d'entreprises permettent aux employés de travailler de chez eux deux jours par semaine.", 
+            cn: "远程办公在欧洲越来越受欢迎。许多公司允许员工每周在家工作两天。" 
+        },
+        { 
+            hour: 15, 
+            type: "旅游",
+            title: "Le TGV rapide", 
+            fr: "Pour aller de Paris à Bordeaux, le TGV ne met que deux heures. C'est incroyablement rapide et confortable. On peut voir la campagne défiler par la fenêtre.", 
+            cn: "从巴黎到波尔多，乘坐高铁只需两个小时。既快又舒服。你可以透过窗户看乡村风景飞驰而过。" 
+        },
+        { 
+            hour: 16, 
+            type: "下午茶",
+            title: "Le Goûter", 
+            fr: "A seize heures, c'est l'heure du goûter pour les enfants. Ils mangent souvent du pain avec du chocolat. Les adultes prennent parfois un thé.", 
+            cn: "下午四点是孩子们的点心时间。他们通常吃巧克力面包。大人有时会喝杯茶。" 
+        },
+        { 
+            hour: 17, 
+            type: "购物",
+            title: "Les Soldes", 
+            fr: "Les soldes d'hiver commencent aujourd'hui. Les magasins proposent des réductions jusqu'à 50%. Il y a beaucoup de monde dans les grands magasins.", 
+            cn: "冬季大减价今天开始了。商店提供高达 50% 的折扣。大百货公司里人山人海。" 
+        },
+        { 
+            hour: 18, 
+            type: "健康",
+            title: "Le Jogging", 
+            fr: "Beaucoup de gens courent le long de la Seine après le travail. C'est un excellent moyen de rester en forme et d'évacuer le stress de la journée.", 
+            cn: "下班后，许多人沿着塞纳河跑步。这是保持身材和消除一天压力的好方法。" 
+        },
+        { 
+            hour: 19, 
+            type: "家庭",
+            title: "Préparer le dîner", 
+            fr: "Ce soir, c'est papa qui cuisine. Il prépare une quiche lorraine avec une salade verte. Toute la famille aide à mettre la table.", 
+            cn: "今晚是爸爸做饭。他正在做洛林乳蛋饼配绿沙拉。全家人都在帮忙摆桌子。" 
+        },
+        { 
+            hour: 20, 
+            type: "娱乐",
+            title: "Le cinéma français", 
+            fr: "Le nouveau film d'Omar Sy sort ce soir. Les critiques sont très positives. Les cinémas seront probablement complets.", 
+            cn: "奥马尔·希的新电影今晚在这个城市上映。评论非常正面。电影院可能会爆满。" 
+        },
+        { 
+            hour: 21, 
+            type: "晚间阅读",
+            title: "Un bon livre", 
+            fr: "Avant de dormir, rien de tel qu'un bon livre. Julie lit Victor Hugo en ce moment. C'est difficile, mais c'est très beau.", 
+            cn: "睡前读一本好书是再好不过的了。朱莉正在读雨果的作品。很难，但这非常美。" 
+        },
+        { 
+            hour: 22, 
+            type: "休息",
+            title: "Bonne nuit", 
+            fr: "La ville devient calme. Les lumières s'éteignent petit à petit. Il est temps de fermer les yeux et de recharger les batteries.", 
+            cn: "城市变得安静了。灯光逐渐熄灭。是时候闭上眼睛充电了。" 
+        }
+    ];
+
+    // --- 逻辑部分 (不用改) ---
+    function updateContent() {
+        const now = new Date();
+        const currentHour = now.getHours(); 
+        
+        // 尝试找到当前小时的故事，如果找不到，就默认显示第1个（避免空白）
+        let content = stories.find(s => s.hour === currentHour);
+        if (!content) {
+            // 如果这个小时没有专门写故事，就随机显示一个，或者显示默认的
+            content = stories[0]; 
+        }
+        
+        document.getElementById('clock').innerText = `${currentHour}:00 Now`;
+        document.getElementById('category').innerText = content.type;
+        document.getElementById('story-title').innerText = content.title;
+        document.getElementById('french-text').innerText = content.fr;
+        document.getElementById('chinese-text').innerText = content.cn;
+    }
+
+    updateContent(); 
+</script>
+
+</body>
+</html>
